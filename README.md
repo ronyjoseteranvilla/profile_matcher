@@ -16,3 +16,17 @@ If the requirements are met, then the current player profile will be updated (ad
 
 **Data:**
 Is in .json files
+
+
+## Installation Process
+
+- Install python env: "python -m venv .venv"
+- Activate environment: "source .venv/Scripts/activate"
+- Install packages: "pip install -r requirements.txt"
+- Run in the base of the project docker compose file for SQLite: "docker compose up -d"
+
+
+## Migration
+
+To be updated.
+

@@ -1,0 +1,22 @@
+services:
+  profile_match_database:
+    image: mysql:latest
+    container_name: profile_match_database
+    env_file:
+      - .vscode/.env
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "profile_match_db"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "user"
+    networks:
+      - profile_match_network
+
+networks:
+  profile_match_network:
+    driver: bridge  
+    
