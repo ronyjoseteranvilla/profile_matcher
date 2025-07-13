@@ -28,5 +28,8 @@ Is in .json files
 
 ## Migration
 
-To be updated.
+**To check if there any changes with the models RUN** "alembic current" **at the base of the project**
 
+**To create a new migration file with the changes from the Base Models RUN** "alembic revision --autogenerate -m '__message_for_migration__'" **at the base of the project**
+
+**To run the migration after checking that everything is okay, run the command** "alembic upgrade head"

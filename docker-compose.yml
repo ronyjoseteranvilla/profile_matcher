@@ -10,7 +10,7 @@ services:
       - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "profile_match_db"
+      MYSQL_DATABASE: "profile_matcher_db"
       MYSQL_USER: "user"
       MYSQL_PASSWORD: "user"
     networks:
