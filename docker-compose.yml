@@ -1,18 +1,25 @@
 services:
+
   profile_match_database:
-    image: mysql:latest
+    image: postgres:latest
     container_name: profile_match_database
-    env_file:
-      - .vscode/.env
+    # env_file: 
+    #   # - path: ".vscode/.env"
+    #   - path: "./.env"
+    #   - required: true
     ports:
-      - "3306:3306"
+      - "5432:5432"
     expose:
-      - "3306"
+      - "5432"
     environment:
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "profile_matcher_db"
-      MYSQL_USER: "user"
-      MYSQL_PASSWORD: "user"
+      #TODO: fix this to use environment variables from .env file
+      # POSTGRES_USER: ${DATABASE_USER}
+      # POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      # POSTGRES_DB: ${DATABASE_NAME}
+
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: profile_matcher_db
     networks:
       - profile_match_network
 

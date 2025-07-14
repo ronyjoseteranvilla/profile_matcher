@@ -1,4 +1,4 @@
-{
+[{
     "player_id": "97983be2-98b7-11e7-90cf-082e5f28d836",
     "credential": "apple_credential",
     "created": "2021-01-10 13:37:17Z",
@@ -36,4 +36,4 @@
         "name": "Hello world clan"
     },
     "_customfield": "mycustom"
-}
+}]

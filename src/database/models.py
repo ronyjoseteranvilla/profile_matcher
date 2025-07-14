@@ -2,75 +2,96 @@
 SqlAlchemy models for the database.
 """
 
-from sqlalchemy import String, Integer, Float, Boolean
+
+from datetime import datetime, timezone
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from typing import List, Dict
+
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.types import JSON
+from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import JSON as PostJson, ARRAY as PostArray
 
 
-class Base(DeclarativeBase):
-    pass
+class Base(AsyncAttrs, DeclarativeBase):
+
+    type_annotation_map = {
+        PostJson: JSON,
+        PostArray: JSON
+    }
+
 
 class PlayerProfile(Base):
     """Represents a player's profile in the game database."""
 
     __tablename__ = 'player_profiles'
 
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True, autoincrement=True, nullable=False)
-    player_id: Mapped[str] = mapped_column(String(30), unique=True, nullable=False )
+    id: Mapped[int] = mapped_column(
+        primary_key=True, unique=True, autoincrement=True, nullable=False)
+    player_id: Mapped[str] = mapped_column(unique=True, nullable=False)
 
-    credential: Mapped[str] = mapped_column(String(30))
-    created: Mapped[str] = mapped_column(String(30))
-    modified: Mapped[str] = mapped_column(String(30))
-    last_session: Mapped[str] = mapped_column(String(30))
+    credential: Mapped[str]
+    created: Mapped[str]
+    modified: Mapped[str]
+    last_session: Mapped[str]
 
-    #Note: I added float to the following fields to match with cents for any currency
-    total_spent: Mapped[float] = mapped_column()
-    total_refund: Mapped[float] = mapped_column()
-    total_transactions: Mapped[float] = mapped_column()
-    last_purchase: Mapped[float] = mapped_column()
+    # Note: I added float to the following fields to match with cents for any currency
+    total_spent: Mapped[float]
+    total_refund: Mapped[float]
+    total_transactions: Mapped[float]
+    last_purchase: Mapped[str]
 
-    
-    # active_campaigns: Mapped[List[str]] = mapped_column()
-    # devices: Mapped[List[Dict]] = mapped_column()
-    level: Mapped[int] = mapped_column()
-    xp: Mapped[int] = mapped_column()
-    total_playtime: Mapped[int] = mapped_column()
-    country: Mapped[str] = mapped_column(String(30))
-    language: Mapped[str] = mapped_column(String(30))
-    birthdate: Mapped[str] = mapped_column(String(30))
-    gender: Mapped[str] = mapped_column(String(30))
-    # inventory: Mapped[Dict] = mapped_column()
-    # clan: Mapped[Dict] = mapped_column()
-    _customfield: Mapped[str] = mapped_column(String(30), name='customfield')
+    active_campaigns: Mapped[PostArray[str]]
+    devices: Mapped[PostArray[PostJson]]
+    level: Mapped[int]
+    xp: Mapped[int]
+    total_playtime: Mapped[int]
+    country: Mapped[str]
+    language: Mapped[str]
+    birthdate: Mapped[str]
+    gender: Mapped[str]
+    inventory: Mapped[PostJson]
+    clan: Mapped[PostJson]
+    _customfield: Mapped[str]
 
     # Additional fields for player profile
-    username: Mapped[str] = mapped_column(String(30))
-    email: Mapped[str] = mapped_column(String(30))
+    username: Mapped[str | None]
+    email: Mapped[str | None]
 
+    # Additional fields to track when record was created, updated, or deleted
+    date_created: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc), server_default=func.now())
+    date_updated: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc), server_default=func.now())
+    date_deleted: Mapped[datetime] = mapped_column(default=None, nullable=True)
 
     def __repr__(self):
         return f'<PlayerProfile {self.username}>'
-    
+
 
 class CurrentCampaign(Base):
     """Represents the current campaign for a player."""
 
     __tablename__ = 'current_campaigns'
 
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True, autoincrement=True, nullable=False)
-    name: Mapped[str] = mapped_column(String(30))
-    
-    game: Mapped[str] = mapped_column(String(30))
-    priority: Mapped[float] = mapped_column(String(30))
-    # matchers: Mapped[Dict] = mapped_column(String(30))
-    enabled: Mapped[bool] = mapped_column(String(30))
+    id: Mapped[int] = mapped_column(
+        primary_key=True, unique=True, autoincrement=True, nullable=False)
+    name: Mapped[str]
 
-    
-    start_date: Mapped[str] = mapped_column(String(30))
-    end_date: Mapped[str] = mapped_column(String(30))
-    last_updated: Mapped[str] = mapped_column(String(30))
-    
-    
+    game: Mapped[str]
+    priority: Mapped[float]
+    matchers: Mapped[PostJson]
+    enabled: Mapped[bool]
+
+    start_date: Mapped[str]
+    end_date: Mapped[str]
+    last_updated: Mapped[str]
+
+    # Additional fields to track when record was created, updated, or deleted
+    date_created: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc), server_default=func.now())
+    date_updated: Mapped[datetime] = mapped_column(
+        default=datetime.now(timezone.utc), server_default=func.now())
+    date_deleted: Mapped[datetime] = mapped_column(default=None, nullable=True)
 
     def __repr__(self):
         return f'<CurrentCampaign {self.name} for the Game {self.game}>'

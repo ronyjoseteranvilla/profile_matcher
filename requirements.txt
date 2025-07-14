@@ -1,8 +1,7 @@
 alembic==1.16.4
 mypy==1.16.1
-mypy_extensions==1.1.0
 pathspec==0.12.1
-pyenv-win==3.1.1
-PyMySQL==1.1.1
 SQLAlchemy==2.0.41
 uvicorn==0.35.0
+cryptography==45.0.5
+psycopg2-binary==2.9.10

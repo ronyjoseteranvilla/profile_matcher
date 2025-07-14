@@ -1,4 +1,4 @@
-{
+[{
     "game": "mygame",
     "name": "mycampaign",
     "priority": 10.5,
@@ -27,4 +27,4 @@
     "end_date": "2022-02-25 00:00:00Z",
     "enabled": true,
     "last_updated": "2021-07-13 11:46:58Z"
-}
+}]

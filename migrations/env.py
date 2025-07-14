@@ -17,7 +17,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", "mysql+pymysql://root:root@localhost:3306/profile_matcher_db"))
+DEFAULT_DATABASE_URL = "postgresql+psycopg2://user:user@localhost:5432/profile_matcher_db"
+
+
+config.set_main_option("sqlalchemy.url", os.getenv(
+    "DATABASE_URL", DEFAULT_DATABASE_URL))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
