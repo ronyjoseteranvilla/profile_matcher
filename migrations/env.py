@@ -5,7 +5,11 @@ from sqlalchemy import pool
 import os
 
 from alembic import context
-from src.database.models import Base
+from src.web.database.models import Base
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(".vscode/.env"))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -17,11 +21,8 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
-DEFAULT_DATABASE_URL = "postgresql+psycopg2://user:user@localhost:5432/profile_matcher_db"
-
-
 config.set_main_option("sqlalchemy.url", os.getenv(
-    "DATABASE_URL", DEFAULT_DATABASE_URL))
+    "DATABASE_URL", "_NOT_SET_"))
 
 # add your model's MetaData object here
 # for 'autogenerate' support

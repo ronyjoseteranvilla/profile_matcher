@@ -10,6 +10,8 @@ import logging
 from contextlib import contextmanager, AbstractContextManager
 from web.database.models import Base
 from typing import Callable
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +36,7 @@ class DatabaseSession:
         self.database_url = database_url or self.get_connection_string()
 
         self._engine = create_engine(self.database_url, echo=True)
-        self._session = sessionmaker(bind=self._engine)
+        self._session = sessionmaker(bind=self._engine, expire_on_commit=False)
 
     def get_connection_string(self) -> str:
         """

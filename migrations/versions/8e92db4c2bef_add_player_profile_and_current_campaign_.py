@@ -10,6 +10,7 @@ import json
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.schema import Table
+import os
 
 
 # revision identifiers, used by Alembic.
@@ -18,8 +19,10 @@ down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-CURRENT_CAMPAIGNS_MOCK_DATA: str = "src/database/data/current_campaign_mock_data.json"
-PLAYER_PROFILES_MOCK_DATA: str = "src/database/data/player_profile_mock_data.json"
+CURRENT_CAMPAIGNS_MOCK_DATA: str = os.getenv(
+    "CURRENT_CAMPAIGNS_MOCK_DATA", "_NOT_SET_")
+PLAYER_PROFILES_MOCK_DATA: str = os.getenv(
+    "PLAYER_PROFILES_MOCK_DATA", "_NOT_SET_")
 
 
 def upgrade() -> None:
