@@ -5,9 +5,10 @@
 from web.repository import player_profile_repository
 from src.web.database.connection import DatabaseSession
 from utils.factories.player_profile_factory import create_and_store_player_profile
+import uuid
 
 
-def test_get_player_profiles(DB_session: DatabaseSession):
+def test_get_player_profiles(DB_session: DatabaseSession) -> None:
     """
     Test retrieving all player profiles.
     """
@@ -26,3 +27,26 @@ def test_get_player_profiles(DB_session: DatabaseSession):
 
     # Assert
     assert actual_player_profiles == expected_player_profiles_mock
+
+
+def test_get_player_profile_by_id(DB_session: DatabaseSession) -> None:
+    """
+    Test retrieving a single player by ID
+    """
+
+    # Arrange
+    expected_player_id = str(uuid.uuid4())
+    expected_player_profile = create_and_store_player_profile(
+        DB_session, player_id=expected_player_id)
+
+    _ = create_and_store_player_profile(
+        DB_session
+    )
+
+    # Act
+    actual_player_profile = player_profile_repository.get_player_profile_by_id(
+        DB_session, expected_player_id)
+
+    # Assert
+    assert actual_player_profile.player_id == expected_player_id
+    assert actual_player_profile == expected_player_profile
