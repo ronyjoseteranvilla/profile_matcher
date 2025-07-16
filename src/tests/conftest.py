@@ -24,7 +24,7 @@ def setup_test_database():
     return db_session
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def DB_session(setup_test_database: DatabaseSession):
     """
     Fixture to provide a database session for each test.
@@ -33,3 +33,4 @@ def DB_session(setup_test_database: DatabaseSession):
 
     with setup_test_database.session() as session:
         yield session
+    setup_test_database.drop_database()

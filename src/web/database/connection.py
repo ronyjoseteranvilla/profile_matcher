@@ -2,7 +2,7 @@
     Setting up the database connection for the Profile Matcher application.
 """
 from sqlalchemy_utils import database_exists, create_database
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, Session
 
 import logging
@@ -79,3 +79,12 @@ class DatabaseSession:
 
     def get_session(self) -> Session:
         return self.session()
+
+    def drop_database(self) -> None:
+
+        logger.info(f"Removing Tables from DB: {self.DATABASE}")
+        metadata = MetaData()
+        metadata.reflect(bind=self._engine)
+        metadata.drop_all(self._engine)
+
+        self.session()
