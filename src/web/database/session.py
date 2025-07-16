@@ -1,10 +1,10 @@
 """
-
+Database connection scripts
 """
 
 from web.database.connection import DatabaseSession
 from sqlalchemy.orm import Session
-
+from functools import wraps
 import logging
 
 import os
@@ -38,17 +38,29 @@ def init_database_session() -> DatabaseSession:
 def get_database_session() -> Session:
     """Get database session to be used in the repository layer"""
 
-    # TODO: fix this
-    database = init_database_session()
-    return database.get_session()
+    database_session = init_database_session()
 
-    # try:
-    #     yield session  # when used in a fixture
-    # except Exception as e:
-    #     session.rollback()
-    #     logger.error(f"Session error: {e}")
-    #     raise
-    # else:
-    #     session.commit()
-    # finally:
-    #     session.close()
+    return database_session.get_session()
+
+
+def database_session_handler(func):
+    """
+    Decorator to inject a session into the function.
+    """
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        session = get_database_session()
+
+        try:
+            result = func(session, *args, **kwargs)
+            session.commit()
+            return result
+        except Exception as e:
+            session.rollback()
+            logging.error(f"Error with Database session: {e}")
+            raise
+        finally:
+            session.close()
+
+    return wrapper

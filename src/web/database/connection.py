@@ -78,7 +78,7 @@ class DatabaseSession:
             session.close()
 
     def get_session(self) -> Session:
-        return self.session()
+        return self._session()
 
     def drop_database(self) -> None:
 
