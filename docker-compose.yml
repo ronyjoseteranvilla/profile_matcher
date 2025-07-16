@@ -3,23 +3,24 @@ services:
   profile_match_database:
     image: postgres:latest
     container_name: profile_match_database
-    # env_file: 
-    #   # - path: ".vscode/.env"
-    #   - path: "./.env"
-    #   - required: true
     ports:
       - "5432:5432"
-    expose:
-      - "5432"
     environment:
-      #TODO: fix this to use environment variables from .env file
-      # POSTGRES_USER: ${DATABASE_USER}
-      # POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      # POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER:-user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-password}
+      POSTGRES_DB: ${DATABASE_NAME:-profile_matcher_db}
+    networks:
+      - profile_match_network
 
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: user
-      POSTGRES_DB: profile_matcher_db
+  profile_matcher_test_database:
+    image: postgres:latest
+    container_name: profile_matcher_test_database
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${TEST_DATABASE_USER:-test}
+      POSTGRES_PASSWORD: ${TEST_DATABASE_PASSWORD:-test}
+      POSTGRES_DB: ${TEST_DATABASE_NAME:-profile_matcher_test_db}
     networks:
       - profile_match_network
 
