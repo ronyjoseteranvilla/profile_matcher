@@ -24,7 +24,10 @@ class ClientConfig(BaseModel):
     last_purchase: str
 
     active_campaigns: list[str]  # TODO: change to relationship
-    devices: list[dict[Any, Any]]
+    devices: list[dict[Any, Any]]  # TODO: add dto for better mapping
+    inventory: dict[Any, Any]
+    clan: dict[Any, Any]
+
     level: int
     xp: int
     total_playtime: int
@@ -32,8 +35,7 @@ class ClientConfig(BaseModel):
     language: str
     birthdate: str
     gender: str
-    inventory: dict[Any, Any]
-    clan: dict[Any, Any]
+
     _customfield: str
 
     # Additional fields for player profile
@@ -44,3 +46,6 @@ class ClientConfig(BaseModel):
     date_created: datetime
     date_updated: datetime
     date_deleted: datetime | None
+
+    class Config:
+        from_attributes = True

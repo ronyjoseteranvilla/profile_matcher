@@ -5,6 +5,7 @@ import random
 import string
 from web.database.models import PlayerProfile
 from web.database.connection import DatabaseSession
+from datetime import datetime, timezone
 
 
 def generate_random_string(length: int = 10) -> str:
@@ -36,6 +37,7 @@ def generate_random_player_profile(**kwargs) -> PlayerProfile:
     """Generate a Player Profile with random values if they are not set"""
 
     player_profile = PlayerProfile(
+        id=kwargs.get("id", random.randint(1, 1_000)),
         player_id=kwargs.get("player_id", generate_random_string()),
         credential=kwargs.get("credential", generate_random_string()),
         created=kwargs.get("created", generate_random_string()),
@@ -51,6 +53,8 @@ def generate_random_player_profile(**kwargs) -> PlayerProfile:
             [generate_random_string() for _ in range(5)]
         ),
         devices=kwargs.get("devices", [{} for _ in range(5)]),
+        inventory=kwargs.get("inventory", {}),
+        clan=kwargs.get("clan", {}),
         level=kwargs.get("level", random.randint(1, 1_000)),
         xp=kwargs.get("xp", random.randint(1, 1_000)),
         total_playtime=kwargs.get("total_playtime", random.randint(1, 1_000)),
@@ -58,9 +62,11 @@ def generate_random_player_profile(**kwargs) -> PlayerProfile:
         language=kwargs.get("language", generate_random_string()),
         birthdate=kwargs.get("birthdate", generate_random_string()),
         gender=kwargs.get("gender", generate_random_string()),
-        inventory=kwargs.get("inventory", {}),
-        clan=kwargs.get("clan", generate_random_string()),
-        _customfield=kwargs.get("_customfield", generate_random_string())
+
+        _customfield=kwargs.get("_customfield", generate_random_string()),
+        date_created=kwargs.get("date_created",  datetime.now(timezone.utc)),
+        date_updated=kwargs.get("date_updated", datetime.now(timezone.utc)),
+        date_deleted=kwargs.get("date_deleted", datetime.now(timezone.utc)),
     )
 
     return player_profile
