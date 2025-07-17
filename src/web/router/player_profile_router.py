@@ -13,7 +13,7 @@ logging = logging.getLogger(__name__)
 
 
 @database_session_handler
-def get_player_profile_by_id(DB_session: Session, player_id: str) -> dict:
+def get_player_profile_by_id(DB_session: Session, player_id: str) -> dict | None:
     """Returns a single Profile Player by a given ID"""
 
     try:
@@ -22,7 +22,7 @@ def get_player_profile_by_id(DB_session: Session, player_id: str) -> dict:
 
         # TODO: raise exception when player profile is not found
         if not player_profile:
-            return {}
+            return None
 
         return {
             "player_id": player_profile.id,
