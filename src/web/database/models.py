@@ -41,6 +41,7 @@ class PlayerProfile(Base):
     total_transactions: Mapped[float]
     last_purchase: Mapped[str]
 
+    # TODO: change to relationship with CurrentCampaign
     active_campaigns: Mapped[PostArray[str]]
     devices: Mapped[PostArray[PostJson]]
     level: Mapped[int]
