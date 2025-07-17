@@ -1,6 +1,22 @@
+"""
+    Configuration file for running Tests
+"""
+import time
 import pytest
 from web.database.connection import DatabaseSession
 import os
+import threading
+from app import run_serve
+
+
+@pytest.fixture(scope="module", autouse=True)
+def start_test_serve():
+    """Run the server in a thread so it doesn't block"""
+
+    server_thread = threading.Thread(target=run_serve, daemon=True)
+    server_thread.start()
+    time.sleep(1)
+    yield
 
 
 @pytest.fixture(scope="session")

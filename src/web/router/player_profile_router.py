@@ -25,16 +25,9 @@ def get_player_profile_by_id(DB_session: Session, player_id: str) -> dict | None
             return None
 
         return {
-            "player_id": player_profile.id,
+            "player_id": player_profile.player_id,
             "credential": player_profile.credential
         }
     except Exception as e:
         logging.error(
             f"Error {e} when getting a Player Profile with ID: {player_id}  ")
-
-
-if __name__ == "__main__":
-
-    player_id = "97983be2-98b7-11e7-90cf-082e5f28d836"
-    client_config: dict[str, str] = get_player_profile_by_id(player_id)
-    print(f"Client Config: {client_config}")

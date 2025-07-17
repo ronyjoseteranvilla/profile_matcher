@@ -33,7 +33,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.wfile.write(
                         "Error: Player Profile not found".encode("utf-8"))
                 else:
-                    self.send_response(404)
+                    self.send_response(200)
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
                     self.wfile.write(json.dumps(result).encode("utf-8"))

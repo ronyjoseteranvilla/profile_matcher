@@ -24,6 +24,17 @@ def create_and_store_player_profile(
     Helper function to create and store a player profile in the database.
     """
 
+    player_profile = generate_random_player_profile(**kwargs)
+
+    DB_session.add(player_profile)
+    DB_session.commit()
+
+    return player_profile
+
+
+def generate_random_player_profile(**kwargs) -> PlayerProfile:
+    """Generate a Player Profile with random values if they are not set"""
+
     player_profile = PlayerProfile(
         player_id=kwargs.get("player_id", generate_random_string()),
         credential=kwargs.get("credential", generate_random_string()),
@@ -51,8 +62,5 @@ def create_and_store_player_profile(
         clan=kwargs.get("clan", generate_random_string()),
         _customfield=kwargs.get("_customfield", generate_random_string())
     )
-
-    DB_session.add(player_profile)
-    DB_session.commit()
 
     return player_profile
