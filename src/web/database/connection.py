@@ -1,5 +1,5 @@
 """
-    Setting up the database connection for the Profile Matcher application.
+Setting up the database connection for the Profile Matcher application.
 """
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import create_engine, MetaData

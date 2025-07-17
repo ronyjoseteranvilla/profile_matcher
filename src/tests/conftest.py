@@ -1,5 +1,5 @@
 """
-    Configuration file for running Tests
+Configuration file for running Tests
 """
 import time
 import pytest

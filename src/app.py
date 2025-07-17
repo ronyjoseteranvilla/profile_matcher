@@ -8,6 +8,7 @@ import os
 
 from web.router import player_profile_router
 from web.dtos.player_profile_models import ClientConfig
+from web.repository.player_profile_repository import PlayerProfileNotFoundException
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -18,33 +19,34 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         path = parsed.path
 
         match = re.match(r"^/get_client_config/([a-fA-F0-9\-]{36})$", path)
+        status_code = 200
+        response = ""
 
         if match:
             player_id = match.group(1)
 
             try:
-                result: ClientConfig | None = player_profile_router.get_client_config_by_id(
+                result: ClientConfig = player_profile_router.get_client_config_by_id(
                     player_id)
 
-                if not result:
-                    self.send_response(404)
-                    self.send_header("Content-Type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(
-                        "Error: Player Profile not found".encode("utf-8"))
-                else:
-                    self.send_response(200)
-                    self.send_header("Content-Type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(result.model_dump_json().encode("utf-8"))
+                status_code = 200
+                response = result.model_dump_json().encode("utf-8")
+
+            except PlayerProfileNotFoundException as e:
+                status_code = 404
+                response = e.message.encode("utf-8")
+
             except Exception as e:
-                self.send_response(500)
-                self.end_headers()
-                self.wfile.write(f"Internal error: {e} ".encode("utf-8"))
+                status_code = 500
+                response = f"Internal error: {e} ".encode("utf-8")
         else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"Not Found")
+            status_code = 404
+            response = f"Endpoint {path} Not Found"
+
+        self.send_response(status_code)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(response)
 
 
 def run_serve():

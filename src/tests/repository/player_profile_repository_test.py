@@ -1,7 +1,7 @@
 """
-    Tests for the PlayerProfileRepository.
+Tests for the PlayerProfileRepository.
 """
-
+import pytest
 from web.repository import player_profile_repository
 from src.web.database.connection import DatabaseSession
 from utils.factories.player_profile_factory import create_and_store_player_profile
@@ -29,9 +29,9 @@ def test_get_player_profiles(DB_session: DatabaseSession) -> None:
     assert actual_player_profiles == expected_player_profiles_mock
 
 
-def test_get_player_profile_by_id(DB_session: DatabaseSession) -> None:
+def test_get_player_profile_by_id_with_success(DB_session: DatabaseSession) -> None:
     """
-    Test retrieving a single player by ID
+    Test retrieving a single player by ID succeeds 
     """
 
     # Arrange
@@ -50,3 +50,18 @@ def test_get_player_profile_by_id(DB_session: DatabaseSession) -> None:
     # Assert
     assert actual_player_profile.player_id == expected_player_id
     assert actual_player_profile == expected_player_profile
+
+
+def test_get_player_profile_by_id_with_exception(DB_session: DatabaseSession) -> None:
+    """
+    Test that PlayerProfileNotFoundException is raised when the player profile is not found
+    """
+
+    # Arrange
+    player_id = str(uuid.uuid4())
+    _ = create_and_store_player_profile(DB_session)
+
+    # Act | Assert
+    with pytest.raises(player_profile_repository.PlayerProfileNotFoundException):
+        _ = player_profile_repository.get_player_profile_by_id(
+            DB_session, player_id)

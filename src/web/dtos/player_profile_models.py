@@ -1,5 +1,5 @@
 """
-    DTO models representing PlayerProfile
+DTO models representing PlayerProfile
 """
 
 from pydantic import BaseModel, ConfigDict

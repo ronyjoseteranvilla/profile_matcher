@@ -1,5 +1,5 @@
 """
-    Functions to create player profile objects for testing purposes.
+Functions to create player profile objects for testing purposes.
 """
 import random
 import string
