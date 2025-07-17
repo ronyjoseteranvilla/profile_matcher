@@ -18,7 +18,7 @@ def get_player_profile_by_id(DB_session: Session, player_id: str) -> dict | None
 
     try:
         player_profile: None | PlayerProfile = player_profile_repository.get_player_profile_by_id(
-            DB_session=DB_session)
+            DB_session=DB_session, player_id=player_id)
 
         # TODO: raise exception when player profile is not found
         if not player_profile:

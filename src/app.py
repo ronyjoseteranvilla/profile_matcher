@@ -11,6 +11,7 @@ from web.router import player_profile_router
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    """HTTP Request Handler class"""
 
     def do_GET(self):
         parsed = urlparse(self.path)
