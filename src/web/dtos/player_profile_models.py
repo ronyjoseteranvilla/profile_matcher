@@ -2,7 +2,7 @@
     DTO models representing PlayerProfile
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Any
 from datetime import datetime
 
@@ -47,5 +47,4 @@ class ClientConfig(BaseModel):
     date_updated: datetime
     date_deleted: datetime | None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
