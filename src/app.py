@@ -3,11 +3,11 @@ Application entry point for the web service.
 """
 from urllib.parse import urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import json
 import re
 import os
 
 from web.router import player_profile_router
+from web.dtos.player_profile_models import ClientConfig
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -23,7 +23,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             player_id = match.group(1)
 
             try:
-                result = player_profile_router.get_player_profile_by_id(
+                result: ClientConfig | None = player_profile_router.get_client_config_by_id(
                     player_id)
 
                 if not result:
@@ -36,8 +36,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.send_response(200)
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
-                    self.wfile.write(json.dumps(result).encode("utf-8"))
-
+                    self.wfile.write(result.model_dump_json().encode("utf-8"))
             except Exception as e:
                 self.send_response(500)
                 self.end_headers()

@@ -7,6 +7,8 @@ from web.database.models import PlayerProfile
 from web.database.connection import DatabaseSession
 from datetime import datetime, timezone
 
+from web.dtos.player_profile_models import ClientConfig
+
 
 def generate_random_string(length: int = 10) -> str:
     """
@@ -70,3 +72,11 @@ def generate_random_player_profile(**kwargs) -> PlayerProfile:
     )
 
     return player_profile
+
+
+def generate_random_client_config(**kwargs) -> ClientConfig:
+    """Generate a Client Config with random values if they are not set"""
+
+    player_profile = generate_random_player_profile(**kwargs)
+    client_config = ClientConfig.model_validate(player_profile)
+    return client_config

@@ -2,8 +2,6 @@
 Tests for Player Profile Service Layer
 """
 
-
-import pytest
 from utils.factories.player_profile_factory import generate_random_string, generate_random_player_profile
 from web.service import player_profile_service
 from unittest.mock import patch, Mock
@@ -27,7 +25,7 @@ def test_get_client_config(get_player_profile_by_id_mock: Mock) -> None:
     get_player_profile_by_id_mock.return_value = expected_player_profile
 
     # Act
-    actual_client_config = player_profile_service.get_client_config(
+    actual_client_config = player_profile_service.get_client_config_by_id(
         DB_session_mock, player_id)
 
     # Assert

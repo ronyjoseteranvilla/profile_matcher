@@ -8,7 +8,7 @@ from web.repository import player_profile_repository
 from web.database.models import PlayerProfile, CurrentCampaign
 
 
-def get_client_config(DB_session: Session, player_id: str) -> ClientConfig:
+def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig:
     """
         Get Client Config (Player Profile) by a given player_id
 
