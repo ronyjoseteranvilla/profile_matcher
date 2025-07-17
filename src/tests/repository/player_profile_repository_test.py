@@ -1,5 +1,5 @@
 """
-Tests for the PlayerProfileRepository.
+Tests for the Player Profile Repository Layer.
 """
 import pytest
 from web.repository import player_profile_repository
