@@ -2,7 +2,7 @@
 Setting up the database connection for the Profile Matcher application.
 """
 from sqlalchemy_utils import database_exists, create_database
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
 import logging
@@ -58,7 +58,7 @@ class DatabaseSession:
         else:
             logger.info(f"Database {self.DATABASE} already exists.")
 
-    def create_database(self) -> None:
+    def create_database_tables(self) -> None:
         Base.metadata.create_all(self._engine)
 
     @contextmanager
@@ -81,10 +81,29 @@ class DatabaseSession:
         return self._session()
 
     def drop_database(self) -> None:
+        """
+        Removes all Tables from the Database
+        """
 
         logger.info(f"Removing Tables from DB: {self.DATABASE}")
-        metadata = MetaData()
+
+        metadata = Base.metadata
         metadata.reflect(bind=self._engine)
         metadata.drop_all(self._engine)
 
         self.session()
+
+    def get_sorted_tables_name(self) -> list[str]:
+        """
+        Return a reversed sorted list of Table names
+        """
+
+        logger.info(f"Returning Sorted Tables")
+
+        metadata = Base.metadata
+        tables = reversed(metadata.sorted_tables)
+
+        return [
+            table.name
+            for table in tables
+        ]

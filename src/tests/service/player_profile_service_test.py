@@ -9,8 +9,9 @@ from web.database.models import PlayerProfile
 from web.dtos.player_profile_models import ClientConfig
 
 
+@patch("web.repository.current_campaign_repository.get_current_campaigns")
 @patch("web.repository.player_profile_repository.get_player_profile_by_id")
-def test_get_client_config(get_player_profile_by_id_mock: Mock) -> None:
+def test_get_client_config(get_player_profile_by_id_mock: Mock, get_current_campaigns_mock: Mock) -> None:
     """
     Test that gets client config for a specific player ID
     """
@@ -23,6 +24,7 @@ def test_get_client_config(get_player_profile_by_id_mock: Mock) -> None:
     )
 
     get_player_profile_by_id_mock.return_value = expected_player_profile
+    get_current_campaigns_mock.return_value = []
 
     # Act
     actual_client_config = player_profile_service.get_client_config_by_id(
