@@ -11,29 +11,31 @@ from web.dtos.player_profile_models import ClientConfig
 import pytest
 
 
-@patch("web.repository.player_profile_repository.update_player_profile")
+@patch("web.repository.player_profile_repository.update_player_profile_active_campaigns")
 @patch("web.repository.current_campaign_repository.get_current_campaigns")
 @patch("web.repository.player_profile_repository.get_player_profile_by_id")
-def test_get_client_config(get_player_profile_by_id_mock: Mock, get_current_campaigns_mock: Mock, update_player_profile_mock: Mock) -> None:
+def test_get_client_config_without_current_campaigns(
+        get_player_profile_by_id_mock: Mock,
+        get_current_campaigns_mock: Mock,
+        update_player_profile_active_campaigns_mock: Mock) -> None:
     """
     Test that gets client config for a specific player ID
     - Gets a Player Profile by a given ID
-    - Gets all Current Campaigns
-    - Checks if Player Profile data matches each Current Campaign
-    - Updates the Player Profile with the name of the Matching Current Campaigns
-    - Returns a CLientConfig DTO
+    - When no Current Campaigns are returned we keep the same active_campaigns list from the DB
+    - Returns a ClientConfig DTO
     """
 
     # Arrange
     DB_session_mock = Mock()
     player_id = generate_random_string()
-    expected_player_profile: PlayerProfile = generate_random_player_profile(
-        player_id=player_id
+    expected_player_profile = generate_random_player_profile(
+        player_id=player_id,
     )
+    expected_stored_active_campaigns = expected_player_profile.active_campaigns
 
     get_player_profile_by_id_mock.return_value = expected_player_profile
     get_current_campaigns_mock.return_value = []
-    update_player_profile_mock.return_value = expected_player_profile
+    update_player_profile_active_campaigns_mock.return_value = expected_player_profile
 
     # Act
     actual_client_config = player_profile_service.get_client_config_by_id(
@@ -48,8 +50,111 @@ def test_get_client_config(get_player_profile_by_id_mock: Mock, get_current_camp
     get_current_campaigns_mock.assert_called_once_with(
         DB_session_mock
     )
-    update_player_profile_mock.assert_called_once_with(
-        DB_session_mock, expected_player_profile
+    update_player_profile_active_campaigns_mock.assert_called_once_with(
+        DB_session_mock, expected_player_profile, expected_stored_active_campaigns
+    )
+
+
+@patch("web.repository.player_profile_repository.update_player_profile_active_campaigns")
+@patch("web.repository.current_campaign_repository.get_current_campaigns")
+@patch("web.repository.player_profile_repository.get_player_profile_by_id")
+def test_get_client_config_by_id_with_current_campaigns(
+    get_player_profile_by_id_mock: Mock,
+    get_current_campaigns_mock: Mock,
+    update_player_profile_active_campaigns_mock: Mock
+) -> None:
+    """
+    Test that gets client config for a specific player ID
+    - Gets a Player Profile by a given ID
+    - Matches the current Campaigns
+    - Updates the Player Profile active campaigns
+    - Returns a ClientConfig DTO
+    """
+
+    # Arrange
+    DB_session_mock = Mock()
+    player_id = generate_random_string()
+    expected_player_profile = generate_random_player_profile(
+        player_id=player_id,
+        level=100,
+        country="CA",
+        inventory={
+            "guns": 1,
+            "item_09": 9,
+            "item_05": 5
+        }
+    )
+
+    expected_matching_current_campaigns = [
+        generate_random_current_campaign(
+            matchers={
+                "level": {
+                    "min": 50,
+                    "max": 200
+                },
+                "has": {
+                    "country": [
+                        "US",
+                        "CA"
+                    ],
+                    "items": ["guns", "item_09"]
+                },
+                "does_not_have": {
+                    "items": [
+                        "item_009"
+                    ]
+                }
+            }
+        ),
+        generate_random_current_campaign(
+            matchers={
+                "level": {
+                    "min": 100,
+                    "max": 150
+                },
+                "has": {
+                    "country": [
+                        "CA"
+                    ],
+                    "items": ["item_05"]
+                },
+                "does_not_have": {
+                    "items": [
+                        "item_005"
+                    ]
+                }
+            }
+        )
+    ]
+
+    other_current_campaigns = [
+        generate_random_current_campaign()
+        for _ in range(10)
+    ]
+
+    expected_stored_active_campaigns = expected_player_profile.active_campaigns + \
+        [active_campaign.name for active_campaign in expected_matching_current_campaigns]
+
+    get_player_profile_by_id_mock.return_value = expected_player_profile
+    get_current_campaigns_mock.return_value = other_current_campaigns + \
+        expected_matching_current_campaigns
+    update_player_profile_active_campaigns_mock.return_value = expected_player_profile
+
+    # Act
+    actual_client_config = player_profile_service.get_client_config_by_id(
+        DB_session_mock, player_id)
+
+    # Assert
+    assert isinstance(actual_client_config, ClientConfig)
+    assert actual_client_config.player_id == expected_player_profile.player_id
+
+    get_player_profile_by_id_mock.assert_called_once_with(
+        DB_session_mock, player_id)
+    get_current_campaigns_mock.assert_called_once_with(
+        DB_session_mock
+    )
+    update_player_profile_active_campaigns_mock.assert_called_once_with(
+        DB_session_mock, expected_player_profile, expected_stored_active_campaigns
     )
 
 
@@ -158,9 +263,9 @@ def test_is_matching_has_country_and_items(
     assert actual_is_matching_has_country_and_items is expected_is_matching_has_country_and_items
 
 
-def test_is_matching_does_not_have_items() -> None:
+def test_is_matching_does_not_have_items_with_true_response() -> None:
     """
-    Tests that checks if player profile does not have the next items
+    Tests that method returns True if the Player Profile has the items from Current Campaign 'does_not_have' matcher key 
     """
 
     # Arrange
@@ -186,3 +291,35 @@ def test_is_matching_does_not_have_items() -> None:
 
     # Assert
     assert actual_is_matching_does_not_have_items is True
+
+
+def test_is_matching_does_not_have_items_with_false_response() -> None:
+    """
+    Tests that method returns False if the Player Profile does not have the items from Current Campaign 'does_not_have' matcher key
+    """
+
+    # Arrange
+    player_profile = generate_random_player_profile(
+        inventory={
+            "cash": 456,
+            "item_02": 55
+        }
+    )
+    current_campaign = generate_random_current_campaign(
+        matchers={
+            "does_not_have": {
+                "items": [
+                    "item_01",
+                    "item_03"
+                ]
+            }
+        }
+    )
+
+    # Act
+    actual_is_matching_does_not_have_items = player_profile_service.is_matching_does_not_have_items(
+        player_profile, current_campaign
+    )
+
+    # Assert
+    assert actual_is_matching_does_not_have_items is False

@@ -14,7 +14,7 @@ def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig
 
         - Gets Player Profile
         - Gets Current Campaigns
-        - Match Player Profile details with Current Campaigns
+        - Match Player Profile details with Current Campaigns also checks that the campaign name is not already stored
         - Add Matched Current Campaigns to the Player Profile
         - Return Client Config
     """
@@ -22,20 +22,24 @@ def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig
     player_profile = player_profile_repository.get_player_profile_by_id(
         DB_session, player_id)
 
-    current_campaigns: list[CurrentCampaign] = current_campaign_repository.get_current_campaigns(
+    current_campaigns = current_campaign_repository.get_current_campaigns(
         DB_session)
+    player_profile_active_campaigns = player_profile.active_campaigns
 
-    # Match player profile with current campaign
     for current_campaign in current_campaigns:
-        if is_matching_with_current_campaign(player_profile, current_campaign):
-            # TODO: change this to a relationship
-            player_profile.active_campaigns.append(current_campaign.name)
+        if (
+            is_matching_with_current_campaign(
+                player_profile, current_campaign
+            )
+            and
+            current_campaign.name not in player_profile_active_campaigns
+        ):
+            player_profile_active_campaigns.append(current_campaign.name)
 
-    # Update player profile
-    # player_profile = player_profile_repository.update_player_profile(
-    #     DB_session, player_profile)
+    player_profile = player_profile_repository.update_player_profile_active_campaigns(
+        DB_session, player_profile, player_profile_active_campaigns
+    )
 
-    # return client config
     client_config = ClientConfig.model_validate(player_profile)
     return client_config
 
@@ -90,6 +94,8 @@ def is_matching_has_country_and_items(player_profile: PlayerProfile, current_cam
 def is_matching_does_not_have_items(player_profile: PlayerProfile, current_campaign: CurrentCampaign) -> bool:
     """
     Checks if Player Profile does not have the items from the Current Campaign
+    - Return True if the Player Profile has the item
+    - Return False if the Player Profile does not have the item
     """
     if not current_campaign.matchers.get("does_not_have", {}).get("items"):
         return False
