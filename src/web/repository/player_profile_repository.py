@@ -41,3 +41,15 @@ def get_player_profile_by_id(DB_session: Session, player_id: str) -> PlayerProfi
             message=f"The Player Profile with ID: {player_id} was not found")
 
     return player_profile
+
+
+def update_player_profile_active_campaigns(DB_session: Session, player_profile: PlayerProfile, active_campaigns: list[str]) -> PlayerProfile:
+    """
+    Updates a Player Profile Active Campaigns column
+    """
+
+    player_profile.active_campaigns = active_campaigns
+    DB_session.commit()
+    DB_session.refresh(player_profile)
+
+    return player_profile

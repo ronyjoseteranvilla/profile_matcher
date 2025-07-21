@@ -6,6 +6,7 @@ from web.repository import player_profile_repository
 from src.web.database.connection import DatabaseSession
 from utils.factories.player_profile_factory import create_and_store_player_profile
 import uuid
+from src.utils.helpers import generate_random_string
 
 
 def test_get_player_profiles(DB_session: DatabaseSession) -> None:
@@ -65,3 +66,34 @@ def test_get_player_profile_by_id_with_exception(DB_session: DatabaseSession) ->
     with pytest.raises(player_profile_repository.PlayerProfileNotFoundException):
         _ = player_profile_repository.get_player_profile_by_id(
             DB_session, player_id)
+
+
+def test_update_player_profile_active_campaigns(DB_session: DatabaseSession) -> None:
+    """
+    Test that Player Profile Active Campaigns are updated
+    """
+
+    # Arrange
+    player_profile = create_and_store_player_profile(
+        DB_session, active_campaigns=[])
+    active_campaigns = [generate_random_string() for _ in range(10)]
+
+    assert len(player_profile.active_campaigns) == 0
+
+    # Act
+    actual_player_profile = player_profile_repository.update_player_profile_active_campaigns(
+        DB_session,
+        player_profile,
+        active_campaigns
+    )
+
+    expected_player_profile = player_profile_repository.get_player_profile_by_id(
+        DB_session, player_profile.player_id)
+
+    # Assert
+
+    assert (
+        len(actual_player_profile.active_campaigns) ==
+        len(expected_player_profile.active_campaigns) ==
+        len(active_campaigns)
+    )
