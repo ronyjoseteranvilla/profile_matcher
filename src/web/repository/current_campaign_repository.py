@@ -15,5 +15,5 @@ def get_current_campaigns(DB_session: Session) -> list[CurrentCampaign]:
     query = select(CurrentCampaign)
     result = DB_session.execute(query)
 
-    # TODO: Add mock data
+    # TODO: Add mock data (Migration) or from service (Factory)
     return result.scalars().all()
