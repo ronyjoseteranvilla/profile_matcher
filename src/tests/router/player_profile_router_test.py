@@ -3,10 +3,14 @@ Tests for calling Player Profile GET request
 """
 from unittest.mock import patch, Mock
 import uuid
-from web.database.models import PlayerProfile
 from utils.factories.player_profile_factory import generate_random_client_config
 import requests
 from web.repository.player_profile_repository import PlayerProfileNotFoundException
+import os
+
+
+HOST: str = os.getenv("TEST_API_HOST", "localhost")
+PORT: int = int(os.getenv("TEST_API_PORT", 8090))
 
 
 @patch("web.service.player_profile_service.get_client_config_by_id")
@@ -22,7 +26,7 @@ def test_get_client_config_by_id_success(get_client_config_by_id_mock: Mock) -> 
 
     # Act
     response = requests.get(
-        f"http://localhost:8080/get_client_config/{player_id}")
+        f"http://{HOST}:{PORT}/get_client_config/{player_id}")
 
     # Assert
     assert response.status_code == 200
@@ -42,7 +46,7 @@ def test_get_client_config_by_id_with_exception(get_client_config_by_id_mock: Mo
 
     # Act
     response = requests.get(
-        f"http://localhost:8080/get_client_config/{player_id}")
+        f"http://{HOST}:{PORT}/get_client_config/{player_id}")
 
     # Assert
     assert response.status_code == 404

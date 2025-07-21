@@ -15,7 +15,14 @@ from app import run_serve
 def start_test_serve():
     """Run the server in a thread so it doesn't block"""
 
-    server_thread = threading.Thread(target=run_serve, daemon=True)
+    host: str = os.getenv("TEST_API_HOST", "localhost")
+    port: int = int(os.getenv("TEST_API_PORT", 8090))
+
+    server_thread = threading.Thread(
+        target=run_serve,
+        daemon=True,
+        kwargs={"host": host, "port": port}
+    )
     server_thread.start()
     time.sleep(1)
     yield

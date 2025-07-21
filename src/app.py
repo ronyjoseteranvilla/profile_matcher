@@ -49,11 +49,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(response)
 
 
-def run_serve():
-    """Run localhost serve"""
+def run_serve(host: str, port: int):
+    """Run serve"""
 
-    host: str = os.getenv("API_HOST", "localhost")
-    port: int = int(os.getenv("API_PORT", 8080))
     server_address = (host, port)
     httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
     print(f"Running serve on {host}:{port}")
@@ -61,4 +59,6 @@ def run_serve():
 
 
 if __name__ == "__main__":
-    run_serve()
+    host: str = os.getenv("API_HOST", "localhost")
+    port: int = int(os.getenv("API_PORT", 8080))
+    run_serve(host, port)
