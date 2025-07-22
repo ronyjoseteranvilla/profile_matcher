@@ -1,6 +1,6 @@
 """
 Business logic for getting Current Campaign Information (Mocked and DB data)
-NOTE: Instead of this service logic, I would have created a migration to ingest mock data
+NOTE: Instead of this service logic, I would have created a migration to ingest mock data, I'm just following the requirements of the client to create a mock service
 """
 
 from sqlalchemy.orm import Session
@@ -20,22 +20,22 @@ def get_all_current_campaigns(DB_session: Session) -> list[CurrentCampaign]:
     current_db_campaigns = current_campaign_repository.get_current_campaigns(
         DB_session)
 
-    current_mock_campaigns = get_mocked_current_campaigns()
+    current_mock_campaigns = _get_mocked_current_campaigns()
 
     return current_db_campaigns + current_mock_campaigns
 
 
-def get_mocked_current_campaigns() -> list[CurrentCampaign]:
+def _get_mocked_current_campaigns() -> list[CurrentCampaign]:
     """
     Returns a list of Mock Current Campaign objects
     """
 
-    random_amount_current_campaigns = random.randint(1, 100)
+    random_amount_current_campaigns = random.randint(1, 1_000)
     mocked_current_campaigns = []
 
     for _ in range(random_amount_current_campaigns):
         min_level = random.randint(1, 100)
-        max_level = random.randint(min_level, min_level*2)
+        max_level = random.randint(min_level, min_level*10)
 
         random_sample_of_countries = random.randint(0, len(ISO_COUNTRY_CODES))
         has_country = random.sample(

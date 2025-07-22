@@ -4,8 +4,8 @@ Functions to create current campaign objects for testing purposes.
 
 from web.database.connection import DatabaseSession
 from web.database.models import CurrentCampaign
-from src.utils.helpers import (generate_random_string, generate_random_int,
-                               generate_random_float, generate_random_bool, generate_utc_datetime)
+from utils.helpers import (generate_random_string, generate_random_int,
+                           generate_random_float, generate_random_bool, generate_utc_datetime)
 from typing import Final
 
 ISO_COUNTRY_CODES: Final = ["AF", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR",

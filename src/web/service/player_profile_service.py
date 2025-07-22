@@ -4,8 +4,9 @@ Business logic for getting a Client Configuration (Player Profile)
 
 from sqlalchemy.orm import Session
 from web.dtos.player_profile_models import ClientConfig
-from web.repository import player_profile_repository, current_campaign_repository
+from web.repository import player_profile_repository
 from web.database.models import PlayerProfile, CurrentCampaign
+from web.service import current_campaign_service
 
 
 def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig:
@@ -22,7 +23,7 @@ def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig
     player_profile = player_profile_repository.get_player_profile_by_id(
         DB_session, player_id)
 
-    current_campaigns = current_campaign_repository.get_current_campaigns(
+    current_campaigns = current_campaign_service.get_all_current_campaigns(
         DB_session)
     player_profile_active_campaigns = player_profile.active_campaigns
 

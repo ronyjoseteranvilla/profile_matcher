@@ -11,11 +11,11 @@ import pytest
 
 
 @patch("web.repository.player_profile_repository.update_player_profile_active_campaigns")
-@patch("web.repository.current_campaign_repository.get_current_campaigns")
+@patch("web.service.current_campaign_service.get_all_current_campaigns")
 @patch("web.repository.player_profile_repository.get_player_profile_by_id")
 def test_get_client_config_without_current_campaigns(
         get_player_profile_by_id_mock: Mock,
-        get_current_campaigns_mock: Mock,
+        get_all_current_campaigns_mock: Mock,
         update_player_profile_active_campaigns_mock: Mock) -> None:
     """
     Test that gets client config for a specific player ID
@@ -33,7 +33,7 @@ def test_get_client_config_without_current_campaigns(
     expected_stored_active_campaigns = expected_player_profile.active_campaigns
 
     get_player_profile_by_id_mock.return_value = expected_player_profile
-    get_current_campaigns_mock.return_value = []
+    get_all_current_campaigns_mock.return_value = []
     update_player_profile_active_campaigns_mock.return_value = expected_player_profile
 
     # Act
@@ -46,7 +46,7 @@ def test_get_client_config_without_current_campaigns(
 
     get_player_profile_by_id_mock.assert_called_once_with(
         DB_session_mock, player_id)
-    get_current_campaigns_mock.assert_called_once_with(
+    get_all_current_campaigns_mock.assert_called_once_with(
         DB_session_mock
     )
     update_player_profile_active_campaigns_mock.assert_called_once_with(
@@ -55,11 +55,11 @@ def test_get_client_config_without_current_campaigns(
 
 
 @patch("web.repository.player_profile_repository.update_player_profile_active_campaigns")
-@patch("web.repository.current_campaign_repository.get_current_campaigns")
+@patch("web.service.current_campaign_service.get_all_current_campaigns")
 @patch("web.repository.player_profile_repository.get_player_profile_by_id")
 def test_get_client_config_by_id_with_current_campaigns(
     get_player_profile_by_id_mock: Mock,
-    get_current_campaigns_mock: Mock,
+    get_all_current_campaigns_mock: Mock,
     update_player_profile_active_campaigns_mock: Mock
 ) -> None:
     """
@@ -135,7 +135,7 @@ def test_get_client_config_by_id_with_current_campaigns(
         [active_campaign.name for active_campaign in expected_matching_current_campaigns]
 
     get_player_profile_by_id_mock.return_value = expected_player_profile
-    get_current_campaigns_mock.return_value = other_current_campaigns + \
+    get_all_current_campaigns_mock.return_value = other_current_campaigns + \
         expected_matching_current_campaigns
     update_player_profile_active_campaigns_mock.return_value = expected_player_profile
 
@@ -149,7 +149,7 @@ def test_get_client_config_by_id_with_current_campaigns(
 
     get_player_profile_by_id_mock.assert_called_once_with(
         DB_session_mock, player_id)
-    get_current_campaigns_mock.assert_called_once_with(
+    get_all_current_campaigns_mock.assert_called_once_with(
         DB_session_mock
     )
     update_player_profile_active_campaigns_mock.assert_called_once_with(
