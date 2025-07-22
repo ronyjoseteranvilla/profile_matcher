@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name":"Run Player Profile API",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "app",
+            "cwd": "${workspaceFolder}/src",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "justMyCode": true
+        }
+    ]
+}
