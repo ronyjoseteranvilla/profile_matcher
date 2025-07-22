@@ -2,12 +2,13 @@
 Tests for Player Profile Service Layer
 """
 
-from utils.factories.player_profile_factory import generate_random_string, generate_random_player_profile
+from utils.factories.player_profile_factory import generate_random_player_profile
 from utils.factories.current_campaign_factory import generate_random_current_campaign
 from web.service import player_profile_service
 from unittest.mock import patch, Mock
 from web.dtos.player_profile_models import ClientConfig
 import pytest
+from uuid import uuid4
 
 
 @patch("web.repository.player_profile_repository.update_player_profile_active_campaigns")
@@ -26,7 +27,7 @@ def test_get_client_config_without_current_campaigns(
 
     # Arrange
     DB_session_mock = Mock()
-    player_id = generate_random_string()
+    player_id = uuid4()
     expected_player_profile = generate_random_player_profile(
         player_id=player_id,
     )
@@ -72,7 +73,7 @@ def test_get_client_config_by_id_with_current_campaigns(
 
     # Arrange
     DB_session_mock = Mock()
-    player_id = generate_random_string()
+    player_id = uuid4()
     expected_player_profile = generate_random_player_profile(
         player_id=player_id,
         level=100,

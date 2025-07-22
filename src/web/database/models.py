@@ -26,10 +26,10 @@ class PlayerProfile(Base):
 
     __tablename__ = 'player_profiles'
 
-    id: Mapped[int] = mapped_column(
-        primary_key=True, unique=True, autoincrement=True, nullable=False)
-    player_id: Mapped[str] = mapped_column(
-        unique=True, nullable=False)  # TODO: Move this to UUID
+    player_id: Mapped[UUID] = mapped_column(
+        primary_key=True,
+        unique=True, nullable=False, default=uuid4
+    )
 
     credential: Mapped[str]
     created: Mapped[str]

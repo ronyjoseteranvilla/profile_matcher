@@ -5,7 +5,7 @@ import pytest
 from web.repository import player_profile_repository
 from src.web.database.connection import DatabaseSession
 from utils.factories.player_profile_factory import create_and_store_player_profile
-import uuid
+from uuid import uuid4
 from src.utils.helpers import generate_random_string
 
 
@@ -36,7 +36,7 @@ def test_get_player_profile_by_id_with_success(DB_session: DatabaseSession) -> N
     """
 
     # Arrange
-    expected_player_id = str(uuid.uuid4())
+    expected_player_id = uuid4()
     expected_player_profile = create_and_store_player_profile(
         DB_session, player_id=expected_player_id)
 
@@ -59,7 +59,7 @@ def test_get_player_profile_by_id_with_exception(DB_session: DatabaseSession) ->
     """
 
     # Arrange
-    player_id = str(uuid.uuid4())
+    player_id = uuid4()
     _ = create_and_store_player_profile(DB_session)
 
     # Act | Assert

@@ -1,8 +1,8 @@
 """Add player profile and current campaign tables
 
-Revision ID: 8e92db4c2bef
+Revision ID: ba1791a334fd
 Revises: 
-Create Date: 2025-07-14 19:39:52.913602
+Create Date: 2025-07-22 19:06:06.368827
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ import os
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8e92db4c2bef'
+revision: str = 'ba1791a334fd'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,10 +58,8 @@ def upgrade() -> None:
                                                      sa.UniqueConstraint('id')
                                                      )
     player_profiles_table: Table = op.create_table('player_profiles',
-                                                   sa.Column('id', sa.Integer(),
-                                                             autoincrement=True, nullable=False),
                                                    sa.Column(
-                                                       'player_id', sa.String(), nullable=False),
+                                                       'player_id', sa.Uuid(), nullable=False),
                                                    sa.Column(
                                                        'credential', sa.String(), nullable=False),
                                                    sa.Column(
@@ -113,8 +111,7 @@ def upgrade() -> None:
                                                    sa.Column(
                                                        'date_deleted', sa.DateTime(), nullable=True),
                                                    sa.PrimaryKeyConstraint(
-                                                       'id'),
-                                                   sa.UniqueConstraint('id'),
+                                                       'player_id'),
                                                    sa.UniqueConstraint(
                                                        'player_id')
                                                    )

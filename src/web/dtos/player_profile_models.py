@@ -5,13 +5,13 @@ DTO models representing PlayerProfile
 from pydantic import BaseModel, ConfigDict
 from typing import Any
 from datetime import datetime
+from uuid import UUID
 
 
 class ClientConfig(BaseModel):
     """Base Model a client config (player profile)"""
 
-    id: int
-    player_id: str
+    player_id: UUID
 
     credential: str
     created: str

@@ -9,6 +9,8 @@ from web.dtos.player_profile_models import ClientConfig
 from src.utils.helpers import (
     generate_random_string, generate_random_int, generate_random_float, generate_utc_datetime)
 
+from uuid import uuid4
+
 
 def create_and_store_player_profile(
     DB_session: DatabaseSession,
@@ -32,8 +34,7 @@ def generate_random_player_profile(**kwargs) -> PlayerProfile:
     """
 
     player_profile = PlayerProfile(
-        id=kwargs.get("id", generate_random_int()),
-        player_id=kwargs.get("player_id", generate_random_string()),
+        player_id=kwargs.get("player_id", uuid4()),
         credential=kwargs.get("credential", generate_random_string()),
         created=kwargs.get("created", generate_random_string()),
         modified=kwargs.get("modified", generate_random_string()),

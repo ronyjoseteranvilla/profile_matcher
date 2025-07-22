@@ -9,6 +9,7 @@ import os
 from web.router import player_profile_router
 from web.dtos.player_profile_models import ClientConfig
 from web.repository.player_profile_repository import PlayerProfileNotFoundException
+from uuid import UUID
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -27,7 +28,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
             try:
                 result: ClientConfig = player_profile_router.get_client_config_by_id(
-                    player_id)
+                    UUID(player_id)
+                )
 
                 status_code = 200
                 response = result.model_dump_json().encode("utf-8")

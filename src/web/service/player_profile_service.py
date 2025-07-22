@@ -7,9 +7,10 @@ from web.dtos.player_profile_models import ClientConfig
 from web.repository import player_profile_repository
 from web.database.models import PlayerProfile, CurrentCampaign
 from web.service import current_campaign_service
+from uuid import UUID
 
 
-def get_client_config_by_id(DB_session: Session, player_id: str) -> ClientConfig:
+def get_client_config_by_id(DB_session: Session, player_id: UUID) -> ClientConfig:
     """
         Get Client Config (Player Profile) by a given player_id
 
