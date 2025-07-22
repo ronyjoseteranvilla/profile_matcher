@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.types import JSON
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import JSON as PostJson, ARRAY as PostArray
+from uuid import UUID, uuid4
 
 
 class Base(AsyncAttrs, DeclarativeBase):
@@ -41,7 +42,6 @@ class PlayerProfile(Base):
     total_transactions: Mapped[float]
     last_purchase: Mapped[str]
 
-    # TODO: change to relationship with CurrentCampaign
     active_campaigns: Mapped[PostArray[str]]
     devices: Mapped[PostArray[PostJson]]
     level: Mapped[int]

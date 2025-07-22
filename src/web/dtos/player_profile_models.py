@@ -23,8 +23,8 @@ class ClientConfig(BaseModel):
     total_transactions: float
     last_purchase: str
 
-    active_campaigns: list[str]  # TODO: change to relationship
-    devices: list[dict[Any, Any]]  # TODO: add dto for better mapping
+    active_campaigns: list[str]
+    devices: list[dict[Any, Any]]
     inventory: dict[Any, Any]
     clan: dict[Any, Any]
 
