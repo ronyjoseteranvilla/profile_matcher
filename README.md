@@ -15,21 +15,28 @@ The service will get the full profile from the database and then match the curre
 If the requirements are met, then the current player profile will be updated (add the campaign name to the profile – active campaign) and returned to the user.
 
 **Data:**
-Is in .json files
+Is in .json files inside `src/web/database/data/`
 
 
-## Installation Process
+### Installation Process
+- Copy variables from  `.vscode/.env_example` into `.vscode/.env`
+- Install python env: `python -m venv .venv`
+- Activate environment: `source .venv/Scripts/activate`
+- Install packages: `pip install -r requirements.txt`
+- Install Database Container: `docker compose --env-file .vscode/.env up -d profile_match_database`
+    - **Optional:** at this point you can run the whole application (real+test database and api) by not specifying a service name on the `docker compose` command. Ex: `docker compose --env-file .vscode/.env up -d`
+- Run migration: `alembic upgrade head` This will create the `player_profiles` and  `current_campaigns`
+- Run APP: 
+    - With VsCode Debug Launcher
+        - Create a file `.vscode/launch.json`
+        - Copy the content of `.vscode/launch.example.json` into new file
+        - Now on VsCode debugger you can Run `Run Player Profile API`
+    - With Docker
+        - Run the command `docker compose --env-file .vscode/.env up -d profile_matcher_api`
 
-- Install python env: "python -m venv .venv"
-- Activate environment: "source .venv/Scripts/activate"
-- Install packages: "pip install -r requirements.txt"
-- Run in the base of the project docker compose file for SQLite: "docker compose up -d"
+### Testing
+- Run Test Database Instance: `docker compose --env-file .vscode/.env up -d profile_matcher_test_database`
 
+This will create a new Container for the test databases, that will expose the port `5433` vs the production Database Container that is with port `5432`.
 
-## Migration
-
-**To check if there any changes with the models RUN** "alembic current" **at the base of the project**
-
-**To create a new migration file with the changes from the Base Models RUN** "alembic revision --autogenerate -m '__message_for_migration__'" **at the base of the project**
-
-**To run the migration after checking that everything is okay, run the command** "alembic upgrade head"
+- Run tests from VsCode Test Explorer

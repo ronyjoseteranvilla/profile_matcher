@@ -6,7 +6,6 @@ from utils.factories.player_profile_factory import generate_random_string, gener
 from utils.factories.current_campaign_factory import generate_random_current_campaign
 from web.service import player_profile_service
 from unittest.mock import patch, Mock
-from web.database.models import PlayerProfile
 from web.dtos.player_profile_models import ClientConfig
 import pytest
 
@@ -220,8 +219,8 @@ def test_is_matching_level_when_matchers_are_not_set() -> None:
     "player_country,country_matcher,player_item,item_matcher,expected_is_matching_has_country_and_items",
     [
         ("RO", ["US", "MX", "RO"], "item_1", ["item_1"], True),
-        ("VZ", ["US", "RO", "vz"], "item_0005", [
-         "item_0005", "item_09", "ITEM_1"], True),
+        ("VZ", ["US", "RO", "vz"],
+         "item_0005", ["item_0005", "item_09", "ITEM_1"], True),
         ("MX", ["US", "PO", "VZ"], "item_01", ["item_01"], False)
     ]
 )
