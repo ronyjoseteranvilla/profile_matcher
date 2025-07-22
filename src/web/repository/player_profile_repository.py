@@ -48,8 +48,8 @@ def update_player_profile_active_campaigns(DB_session: Session, player_profile: 
     Updates a Player Profile Active Campaigns column
     """
 
-    player_profile.active_campaigns = active_campaigns
+    DB_session.query(PlayerProfile).filter(
+        PlayerProfile.player_id == player_profile.player_id).update({"active_campaigns": active_campaigns})
     DB_session.commit()
-    DB_session.refresh(player_profile)
 
     return player_profile
